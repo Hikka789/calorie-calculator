@@ -1,0 +1,332 @@
+﻿<Window x:Class="Fitnes.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Fitnes" Height="700" Width="900"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        WindowStartupLocation="CenterScreen"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+
+    <!-- Ресурсы приложения (Стили) -->
+    <Window.Resources>
+        <!-- Стиль для текста -->
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#E2E8F0"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+
+        <!-- Стиль для заголовков -->
+        <Style x:Key="HeaderText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+        </Style>
+
+        <!-- Стиль для TextBox -->
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" BorderBrush="#334155" BorderThickness="1">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="5"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для ComboBox -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="8" BorderBrush="#334155" BorderThickness="1"/>
+                            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" Content="{TemplateBinding SelectionBoxItem}" Margin="10,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <ToggleButton IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press" Background="Transparent" BorderThickness="0">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="Transparent" Width="30" Height="30">
+                                            <Path Data="M 0 0 L 5 5 L 10 0" Stroke="#94A3B8" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <Popup x:Name="PART_Popup" AllowsTransparency="True" IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" Focusable="False">
+                                <Border Background="#1E293B" CornerRadius="8" BorderBrush="#334155" BorderThickness="1" Margin="0,5,0,0" MinWidth="{TemplateBinding ActualWidth}">
+                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для элементов внутри ComboBox -->
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="6" Margin="4,2">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#334155"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для кнопок -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#8B5CF6"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#7C3AED"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#6D28D9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для TabItem -->
+        <Style TargetType="TabItem">
+            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="border" Background="Transparent" Padding="20,10" Margin="0,0,10,0" CornerRadius="8" Cursor="Hand">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1E293B"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#334155"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- Основной контейнер окна со скругленными краями и ФОНОМ -->
+    <Border CornerRadius="15" BorderBrush="#1E293B" BorderThickness="2">
+        <Border.Background>
+            <!-- Картинка с силуэтами спортсменов (берется из интернета) -->
+            <!-- ВАЖНО: символ & заменен на &amp; -->
+            <ImageBrush ImageSource="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&amp;w=1470&amp;auto=format&amp;fit=crop" 
+                        Stretch="UniformToFill" Opacity="0.5"/>
+        </Border.Background>
+
+        <Grid>
+            <!-- Полупрозрачный темный слой, чтобы текст и кнопки было хорошо видно -->
+            <Grid.Background>
+                <SolidColorBrush Color="#0F172A" Opacity="0.85"/>
+            </Grid.Background>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Кастомный заголовок окна (чтобы можно было перетаскивать) -->
+            <Grid Grid.Row="0" Background="Transparent" MouseLeftButtonDown="Window_MouseLeftButtonDown">
+                <TextBlock Text="FITNES CLUB" Foreground="#8B5CF6" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Margin="20,0"/>
+                <Button Content="✕" HorizontalAlignment="Right" Margin="0,0,15,0" Width="30" Height="30"
+                        Background="Transparent" Click="BtnClose_Click"
+                        Template="{x:Null}" BorderThickness="0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#EF4444"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+
+            <!-- Контент вкладок -->
+            <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="20,0,20,20">
+
+                <!-- ВКЛАДКА 1: ПРОФИЛЬ -->
+                <TabItem Header="Профиль">
+                    <Border Background="#0F172A" Padding="20" CornerRadius="10">
+                        <StackPanel Margin="10">
+                            <TextBlock Text="Личный профиль" Style="{StaticResource HeaderText}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                    <TextBlock Text="Вес (кг)"/>
+                                    <TextBox x:Name="TbWeight"/>
+
+                                    <TextBlock Text="Рост (см)"/>
+                                    <TextBox x:Name="TbHeight"/>
+
+                                    <TextBlock Text="Возраст"/>
+                                    <TextBox x:Name="TbAge"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                    <TextBlock Text="Пол"/>
+                                    <ComboBox x:Name="CbGender">
+                                        <ComboBoxItem Content="Мужской"/>
+                                        <ComboBoxItem Content="Женский"/>
+                                    </ComboBox>
+
+                                    <TextBlock Text="Уровень активности"/>
+                                    <ComboBox x:Name="CbActivity">
+                                        <ComboBoxItem Content="Низкий"/>
+                                        <ComboBoxItem Content="Средний"/>
+                                        <ComboBoxItem Content="Высокий"/>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Grid>
+
+                            <Button x:Name="BtnCalculate" Content="Рассчитать норму" Width="200" HorizontalAlignment="Left" Margin="0,10,0,0" Click="BtnCalculate_Click"/>
+
+                            <TextBlock x:Name="TbCalories" FontWeight="Bold" FontSize="18" Foreground="#10B981" Margin="0,15,0,0"/>
+
+                            <Button x:Name="BtnSaveProfile" Content="Сохранить профиль" Width="200" HorizontalAlignment="Left" Margin="0,20,0,0" Click="BtnSaveProfile_Click"/>
+                        </StackPanel>
+                    </Border>
+                </TabItem>
+
+                <!-- ВКЛАДКА 2: УПРАЖНЕНИЯ -->
+                <TabItem Header="Упражнения">
+                    <Border Background="#0F172A" Padding="20" CornerRadius="10">
+                        <StackPanel Margin="10">
+                            <TextBlock Text="Выбор упражнений" Style="{StaticResource HeaderText}"/>
+
+                            <TextBlock Text="Группа мышц"/>
+                            <ComboBox x:Name="CbMuscleGroup" Width="250" HorizontalAlignment="Left" SelectionChanged="CbMuscleGroup_SelectionChanged">
+                                <ComboBoxItem Content="Грудь"/>
+                                <ComboBoxItem Content="Спина"/>
+                                <ComboBoxItem Content="Ноги"/>
+                            </ComboBox>
+
+                            <!-- Убрано свойство CornerRadius -->
+                            <ListBox x:Name="LbExercises" Height="250" Background="#1E293B" BorderThickness="0" Padding="5" Margin="0,10,0,0">
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Padding" Value="10,5"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <Border x:Name="border" Background="Transparent" CornerRadius="6" Margin="0,2">
+                                                        <ContentPresenter Margin="{TemplateBinding Padding}"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="border" Property="Background" Value="#334155"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
+
+                            <Button x:Name="BtnAddToProgram" Content="Добавить в программу" Width="250" HorizontalAlignment="Left" Margin="0,15,0,0" Click="BtnAddToProgram_Click"/>
+                        </StackPanel>
+                    </Border>
+                </TabItem>
+
+                <!-- ВКЛАДКА 3: ПРОГРАММА -->
+                <TabItem Header="Программа" GotFocus="TabProgram_GotFocus">
+                    <Border Background="#0F172A" Padding="20" CornerRadius="10">
+                        <StackPanel Margin="10">
+                            <TextBlock Text="Моя программа" Style="{StaticResource HeaderText}"/>
+
+                            <TextBlock Text="Дата тренировки"/>
+                            <DatePicker x:Name="DpDate" Width="250" HorizontalAlignment="Left" Margin="0,0,0,15"/>
+
+                            <!-- Убрано свойство CornerRadius -->
+                            <ListBox x:Name="LbProgram" Height="250" Background="#1E293B" BorderThickness="0" Padding="5" DisplayMemberPath="Name">
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Padding" Value="10,5"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <Border x:Name="border" Background="Transparent" CornerRadius="6" Margin="0,2">
+                                                        <ContentPresenter Margin="{TemplateBinding Padding}"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="border" Property="Background" Value="#334155"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter TargetName="border" Property="Background" Value="#8B5CF6"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
+                                <Button x:Name="BtnSaveProgram" Content="Сохранить" Width="120" Margin="0,0,10,0" Click="BtnSaveProgram_Click"/>
+                                <Button x:Name="BtnLoadProgram" Content="Загрузить" Width="120" Margin="0,0,10,0" Click="BtnLoadProgram_Click"/>
+                                <Button x:Name="BtnRemoveExercise" Content="Удалить" Width="120" Background="#EF4444" Click="BtnRemoveExercise_Click"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </TabItem>
+
+            </TabControl>
+        </Grid>
+    </Border>
+</Window>
